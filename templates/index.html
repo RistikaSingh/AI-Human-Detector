@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Sentence-level AI vs Human Detector (Prototype)</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>AI vs Human Detector — Sentence Heatmap</h1>
+    <textarea id="inputText" placeholder="Paste your document or paragraph here..." rows="10"></textarea>
+    <div class="controls">
+      <button id="classifyBtn">Classify</button>
+      <span id="status"></span>
+    </div>
+
+    <div id="result">
+      <h3>Document Label: <span id="docLabel">—</span></h3>
+      <div id="heatmap"></div>
+    </div>
+
+    <div style="margin-top:30px;color:#666">
+      <small>Note: This is a prototype. Probabilities are sentence-level and model is trained on synthetic data. Replace training data and retrain for production use.</small>
+    </div>
+  </div>
+
+<script>
+async function classifyText() {
+  const text = document.getElementById("inputText").value;
+  if (!text.trim()) {
+    alert("Please paste some text first.");
+    return;
+  }
+  document.getElementById("status").innerText = "Classifying...";
+  const resp = await fetch("/api/classify", {
+    method: "POST",
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({text})
+  });
+  const data = await resp.json();
+  if (data.error) {
+    alert(data.error);
+    document.getElementById("status").innerText = "";
+    return;
+  }
+  document.getElementById("docLabel").innerText = data.doc_label + " (mean prob: " + data.mean_prob.toFixed(2) + ")";
+  const heatmap = document.getElementById("heatmap");
+  heatmap.innerHTML = "";
+
+  data.sentences.forEach((sObj, idx) => {
+    const p = sObj.ai_prob;
+    const div = document.createElement("div");
+    div.className = "sentence";
+    const hue = Math.round((1 - p) * 120);
+    div.style.background = `linear-gradient(90deg, hsl(${hue},70%,85%) 0%, white 100%)`;
+    div.innerHTML = `<strong>Sentence ${idx+1}:</strong> ${sObj.sentence} <span class="prob">[ai: ${p.toFixed(2)}]</span>`;
+    heatmap.appendChild(div);
+  });
+
+  document.getElementById("status").innerText = "";
+}
+
+document.getElementById("classifyBtn").addEventListener("click", classifyText);
+</script>
+</body>
+</html>

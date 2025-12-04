@@ -1,0 +1,9 @@
+body { font-family: Arial, Helvetica, sans-serif; background: #f6f7fb; color: #222; padding: 30px; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+textarea { width: 100%; font-size: 15px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; resize: vertical; }
+.controls { margin-top: 10px; }
+button { padding: 10px 18px; border-radius: 6px; background: #316BFF; color: white; border: none; cursor: pointer; font-weight: 600; }
+button:hover { opacity: 0.95; }
+#heatmap { margin-top: 10px; }
+.sentence { padding: 8px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.04); }
+.prob { float: right; color: #333; font-weight: 600; }
